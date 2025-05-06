@@ -1,0 +1,24 @@
+<header>
+  <div>Logo</div>
+  <div>
+    <mat-form-field>
+      <mat-select [(value)]="currentLang" (valueChange)="changeLang($event)">
+        <mat-option value="vi">{{ 'vietnamese' | translate }}</mat-option>
+        <mat-option value="en">{{ 'english' | translate }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-select [(value)]="currentTheme" (valueChange)="changeTheme($event)">
+        <mat-option value="light">{{ 'light' | translate }}</mat-option>
+        <mat-option value="dark">{{ 'dark' | translate }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="logout()">{{ 'logout' | translate }}</button>
+  </div>
+</header>
+<main>
+  <router-outlet></router-outlet>
+</main>
+<footer>Footer ở đây</footer>
