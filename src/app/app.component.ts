@@ -35,6 +35,20 @@ export class AppComponent {
   ngOnInit() {
     this.themeService.theme$.subscribe((theme) => {
       this.isDarkTheme = theme === 'dark';
+      this.updateBodyTheme();
     });
+  }
+
+  private updateBodyTheme() {
+    if (this.isBrowser) {
+      const body = document.body;
+      if (this.isDarkTheme) {
+        body.classList.add('dark-theme');
+        body.classList.remove('light-theme');
+      } else {
+        body.classList.add('light-theme');
+        body.classList.remove('dark-theme');
+      }
+    }
   }
 }

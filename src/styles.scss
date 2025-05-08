@@ -3,7 +3,6 @@
 @use "tailwindcss";
 
 @tailwind base;
-@tailwind components;
 @tailwind utilities;
 
 @include mat.core();
@@ -39,7 +38,7 @@ $dark-theme: mat.m2-define-dark-theme((
 @include mat.all-component-themes($light-theme);
 
 // Define dark-theme class
-.dark-theme {
+body.dark-theme {
   @include mat.all-component-colors($dark-theme);
 }
 
