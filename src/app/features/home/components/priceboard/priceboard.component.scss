@@ -1,0 +1,80 @@
+.priceboard-filter {
+    ::ng-deep {
+        .mat-mdc-form-field-subscript-wrapper {
+            display: none !important;
+        }
+        .mat-mdc-form-field-infix {
+            display: flex;
+            padding: 0;
+            height: 36px;
+            min-height: 36px;
+        }
+    }
+}
+
+.priceboard-container {
+    max-height: calc(100vh - 56px - 8px - 132px - 8px - 36px - 8px);
+    font-size: 14px;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+
+    ::ng-deep {
+        .priceboard-row, .priceboard-header {
+            height: 28px;
+            
+            .col-item {
+                flex: 1 0 50px;
+                color: #fff;
+                padding: 0 4px;
+                border-right: 1px solid #ccc;
+                position: relative;
+                overflow-x: hidden;
+                width: 100%;
+            }
+        }
+        .priceboard-header{
+            background-color: #363636;
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            .sort-icon {
+                position: absolute;
+                right: 0;
+            }
+        }
+        .priceboard-row { 
+            .col-item {
+                width: 100%;
+
+                &.text-reference {
+                    color: #fbac20 !important;
+                }
+                &.text-ceiling {
+                    color: #e683ff !important;
+                }
+                &.text-floor {
+                    color: #64baff !important;
+                }
+                &.text-up {
+                    color: rgb(0, 244, 176) !important;
+                }
+                &.text-down {
+                    color: rgb(255, 55, 71) !important;
+                }
+
+                &:not(.col-item-symbol) {
+                    justify-content: flex-end !important;
+                }
+            }
+
+
+            &:nth-child(odd) {
+                background-color: #2f2f2f;
+            }
+            &:nth-child(even) {
+                background-color: #171717;
+            }
+        }
+    }
+}

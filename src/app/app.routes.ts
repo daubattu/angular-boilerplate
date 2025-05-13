@@ -5,8 +5,8 @@ import { AboutPageComponent } from './features/about/about.component';
 import { NotFoundPageComponent } from './features/not-found/not-found.component';
 import { MainLayoutComponent } from './shared/layouts/main/main-layout.component';
 import { BlankLayoutComponent } from './shared/layouts/blank/blank-layout.component';
-import { AuthGuard } from './auth.guard';
-import { LoginGuard } from './login.guard';
+import { AuthGuard } from './shared/guards/auth.guard';
+import { LoginGuard } from './shared/guards/login.guard';
 
 export const routes: Routes = [
   {

@@ -1,0 +1,91 @@
+<div class="priceboard-filter flex items-center">
+    <mat-form-field style="width: 200px;" appearance="fill">
+        <input
+            type="text"
+            placeholder="Tìm mã"
+            matInput
+            [formControl]="symbolControl"
+            [matAutocomplete]="auto"
+        />
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSymbolSelected($event)">
+            <mat-option *ngFor="let symbol of filteredSymbols | async" [value]="symbol">
+            {{ symbol }}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <div class="ml-2">
+        {{ minIndex }}
+        {{ maxIndex }}
+        {{ maxShowItems }}
+    </div>
+</div>
+
+<div #containerRef class="priceboard-container overflow-auto mt-2" (scroll)="onScroll($event)">
+    <div class="priceboard-header flex">
+        <ng-container *ngFor="let column of columns;">
+            <div
+                [class]="'flex items-center cursor-pointer col-item col-item-' + column.key"
+                (click)="handleSort(column)"
+            >
+                <mat-icon
+                    *ngIf="column?.onToogle"
+                    style="font-size: 12px; line-height: 24px;"
+                    (click)="column?.onToogle($event)"
+                >
+                    swap_horiz
+                </mat-icon>
+                {{ column.label }}
+                <ng-container *ngIf="column?.key === sortKey; else emptyIcon">
+                    <mat-icon
+                        *ngIf="sortType === 0; else upIcon"
+                        style="font-size: 12px; line-height: 24px;"
+                        class="text-center sort-icon"
+                    >
+                        arrow_downward
+                    </mat-icon>
+                
+                    <ng-template #upIcon>
+                        <mat-icon
+                            style="font-size: 12px; line-height: 24px;"
+                            class="text-center sort-icon"
+                        >
+                        arrow_upward
+                        </mat-icon>
+                    </ng-template>
+                </ng-container>
+                
+                <ng-template #emptyIcon>
+                    <!-- <div style="width: 24px; height: 24px;"></div> -->
+                </ng-template>
+            </div>
+        </ng-container >
+    </div>
+
+    <div [style.height.px]="28 * minIndex - 0" class="priceboard-offset-top">
+
+    </div>
+    
+    <div class="priceboard-body">
+        <ng-container *ngFor="let symbol of listSymbols; let i = index;">
+            <div *ngIf="i >= minIndex && i <= maxIndex" class="priceboard-row flex">
+                <ng-container *ngFor="let column of columns;">
+                    <ng-container
+                        *ngIf="priceboardDataBySymbol[symbol] as rowData; else noData"
+                    >
+                        <div
+                            [class]="'flex items-center col-item col-item-' + column.key + getColorClassName(column, rowData)"
+                        >
+                            {{ rowData[column.key] }}
+                        </div>
+                    </ng-container>
+                    <ng-template #noData></ng-template>
+                </ng-container>
+            </div>
+        </ng-container>
+    </div>
+
+    <div [style.height.px]="28 * (listSymbols.length - maxIndex)" class="priceboard-offset-top">
+
+    </div>
+</div>
+

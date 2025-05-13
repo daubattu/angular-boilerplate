@@ -1,4 +1,25 @@
 header {
   display: flex;
   justify-content: space-between;
+  height: 56px;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+
+  ::ng-deep {
+    .mdc-text-field {
+      padding: 0 8px !important;
+      height: 36px !important;
+    }
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none !important;
+    }
+    .mat-mdc-form-field-infix {
+      padding: 0 !important;
+    }
+    .mat-mdc-select {
+      height: 36px !important;
+      display: flex;
+    }
+  }
+
 }

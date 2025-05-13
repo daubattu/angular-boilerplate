@@ -1,35 +1,35 @@
-<main>
-    <div class="flex">
+<div>
+    <div class="flex market-indexes-wrapper mt-2">
         <ng-container *ngFor="let index of indexes">
             <market-index [index]="index"></market-index>  <!-- Truyền giá trị index vào component con -->
         </ng-container>
     </div>
 
-    <div class="mt-2">
-        <app-price-board></app-price-board>
+    <div class="mt-2 priceboard-wrapper">
+        <app-priceboard></app-priceboard>
     </div>
-    <!-- <div class="mt-2">
-        <mat-slide-toggle>Toggle me! 1</mat-slide-toggle>
-    </div>
+</div>
+<!-- <div class="mt-2">
+    <mat-slide-toggle>Toggle me! 1</mat-slide-toggle>
+</div>
 
-    <div class="mt-2">
-        <button mat-flat-button color="primary">{{ 'basic' | translate }}</button>
-    </div>
+<div class="mt-2">
+    <button mat-flat-button color="primary">{{ 'basic' | translate }}</button>
+</div>
 
-    <div>
-        <mat-form-field appearance="fill">
-            <mat-label>Chọn quốc gia</mat-label>
-            <input
-                type="text"
-                matInput
-                [formControl]="countryControl"
-                [matAutocomplete]="auto"
-            />
-            <mat-autocomplete #auto="matAutocomplete">
-                <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
-                {{ country }}
-                </mat-option>
-            </mat-autocomplete>
-        </mat-form-field>
-    </div> -->
-</main>
+<div>
+    <mat-form-field appearance="fill">
+        <mat-label>Chọn quốc gia</mat-label>
+        <input
+            type="text"
+            matInput
+            [formControl]="countryControl"
+            [matAutocomplete]="auto"
+        />
+        <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let country of filteredCountries | async" [value]="country">
+            {{ country }}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+</div> -->

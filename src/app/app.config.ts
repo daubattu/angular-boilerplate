@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { HttpInterceptorFn, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http'; 
-import { provideTranslate } from './translate.config';
+import { provideTranslate } from './shared/configs/translate.config';
 import { TranslateService } from '@ngx-translate/core';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
