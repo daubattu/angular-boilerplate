@@ -3,7 +3,7 @@ import marketIndex from '../../mockups/marketIndex';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { fromEvent, map, Observable, startWith, Subject, takeUntil } from 'rxjs';
+import { combineLatest, fromEvent, map, Observable, startWith, Subject, takeUntil } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
@@ -22,8 +22,9 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
   columns: IColumn[] = [];
 
   listSymbols = marketIndex.HOSE_PRICE_BOARD.map((item: any) => item.symbol);
-  priceboardData = marketIndex.HOSE_PRICE_BOARD
+  originalSymbols: string[] = [];
 
+  priceboardData = marketIndex.HOSE_PRICE_BOARD
   priceboardDataBySymbol = marketIndex.HOSE_PRICE_BOARD.reduce((acc: any, item: any) => {
     acc[item.symbol] = item;
     return acc;
@@ -40,7 +41,7 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
 
   isShowQuantity = true;
 
-  sortKey: String = '';
+  sortKey: string = '';
   sortType: number = -1;
   maxShowItems = 0;
   currentIndex = 0;
@@ -50,6 +51,8 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.buildColumns();
     
+    this.originalSymbols = [...this.listSymbols]; // 👈 Lưu lại danh sách gốc
+
     this.filteredSymbols = this.symbolControl.valueChanges.pipe(
       startWith(''),
       map(value => this._filter(value || ''))
@@ -79,6 +82,21 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
     );
   }
 
+  private formatPrice(value: string | number | null | undefined): string {
+    if (value === null || value === undefined) return ''
+    return (Number(value) / 1000).toFixed(2)
+  }
+
+  private formatVolume(value: string | number | null | undefined): string  {
+    if (value === null || value === undefined) return ''
+    return value?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')?.slice(0, -1)
+  }
+
+  private formatPercent(value: string | number | null | undefined): string  {
+    if (value === null || value === undefined) return ''
+    return Number(value).toFixed(2) + '%'
+  }
+
   buildColumns() {
     const groupPrice = this.isPriceShow
       ? [
@@ -86,16 +104,19 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
             key: 'reference',
             label: 'TC',
             compareKey: 'reference',
+            format: this.formatPrice
           },
           {
             key: 'ceiling',
             label: 'Trần',
             compareKey: 'ceiling',
+            format: this.formatPrice
           },
           {
             key: 'floor',
             label: 'Sàn',
             compareKey: 'floor',
+            format: this.formatPrice
           },
         ]
       : [
@@ -131,6 +152,7 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
               this.buildColumns();
             },
             compareKey: 'highestPrice',
+            format: this.formatPrice
           },
           {
             key: this.isShowAvg ? 'avgPrice' : 'mc',
@@ -142,12 +164,14 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
               this.buildColumns();
             },
             compareKey: this.isShowAvg ? 'avgPrice' : 'mc',
+            format: this.formatPrice
           },
           {
             key: 'lowestPrice',
             label: 'Thấp',
             dependOn: 'closePrice',
             compareKey: 'lowestPrice',
+            format: this.formatPrice
           },
         ]
       : [
@@ -195,48 +219,56 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
 
           this.isPriceShow = !this.isPriceShow;
           this.buildColumns();
-        }
+        },
       },
       ...groupPrice,
       {
         key: 'bidPrice3',
         label: 'Giá M 3',
         compareKey: 'bidPrice3',
+        format: this.formatPrice
       },
       {
         key: 'bidVol3',
         label: 'KL M 3',
         compareKey: 'bidPrice3',
+        format: this.formatVolume,
       },
       {
         key: 'bidPrice2',
         label: 'Giá M 2',
         compareKey: 'bidPrice2',
+        format: this.formatPrice
       },
       {
         key: 'bidVol2',
         label: 'KL M 2',
         compareKey: 'bidPrice2',
+        format: this.formatVolume,
       },
       {
         key: 'bidPrice1',
         label: 'Giá M 1',
         compareKey: 'bidPrice1',
+        format: this.formatPrice
       },
       {
         key: 'bidVol1',
         label: 'KL M 1',
         compareKey: 'bidPrice1',
+        format: this.formatVolume,
       },
       {
         key: 'closePrice',
         label: 'Giá',
         compareKey: 'closePrice',
+        format: this.formatPrice
       },
       {
         key: 'closeVol',
         label: 'KL',
         compareKey: 'closePrice',
+        format: this.formatVolume,
       },
       {
         key: this.isShowValueChange ? 'change' : 'stockPercentChange',
@@ -248,36 +280,43 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
           this.buildColumns();
         },
         compareKey: 'closePrice',
+        format: this.isShowValueChange ? this.formatPrice : this.formatPercent
       },
       {
         key: 'offerPrice1',
         label: 'Giá B 1',
         compareKey: 'offerPrice1',
+        format: this.formatPrice
       },
       {
         key: 'offerVol1',
         label: 'KL B 1',
         compareKey: 'offerPrice1',
+        format: this.formatVolume,
       },
       {
         key: 'offerPrice2',
         label: 'Giá B 2',
         compareKey: 'offerPrice2',
+        format: this.formatPrice
       },
       {
         key: 'offerVol2',
-        label: 'KL B 2',
+        label: 'KL B 3',
         compareKey: 'offerPrice2',
+        format: this.formatVolume,
       },
       {
         key: 'offerPrice3',
         label: 'Giá B 3',
         compareKey: 'offerPrice3',
+        format: this.formatPrice
       },
       {
         key: 'offerVol3',
         label: 'KL B 3',
         compareKey: 'offerPrice3',
+        format: this.formatVolume,
       },
       ...groupPrice2,
       {
@@ -288,7 +327,8 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
 
           this.isShowQuantity = !this.isShowQuantity;
           this.buildColumns();
-        }
+        },
+        format: this.formatVolume,
       },
     ]
   }
@@ -307,6 +347,8 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
       this.sortKey = column.key;
       this.sortType = 0;
     } 
+
+    this.sortListSymbols();
   }
 
   onScroll(event: Event) {
@@ -378,5 +420,30 @@ export class PriceBoardComponent implements OnInit, AfterViewInit {
     }
 
     return '';
+  }
+
+  sortListSymbols(): void {
+    if (!this.sortKey || this.sortType === -1) {
+      // 👈 Không có sortKey thì trả lại danh sách gốc
+      this.listSymbols = [...this.originalSymbols];
+      return;
+    }
+
+    const key = this.sortKey;
+    const direction = this.sortType === 1 ? -1 : 1;
+
+    this.listSymbols = [...this.listSymbols].sort((a, b) => {
+      const valA = this.priceboardDataBySymbol[a]?.[key];
+      const valB = this.priceboardDataBySymbol[b]?.[key];
+
+      const numA = typeof valA === 'string' ? parseFloat(valA.replace(/,/g, '')) : valA;
+      const numB = typeof valB === 'string' ? parseFloat(valB.replace(/,/g, '')) : valB;
+
+      return ((numA > numB) ? 1 : (numA < numB) ? -1 : 0) * direction;
+    });
+  }
+
+  handleScrollBody(event: Event) {
+    console.log(event)
   }
 }

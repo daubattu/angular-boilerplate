@@ -65,7 +65,7 @@
 
     </div>
     
-    <div class="priceboard-body">
+    <div class="priceboard-body" (scroll)="handleScrollBody($event)">
         <ng-container *ngFor="let symbol of listSymbols; let i = index;">
             <div *ngIf="i >= minIndex && i <= maxIndex" class="priceboard-row flex">
                 <ng-container *ngFor="let column of columns;">
@@ -75,7 +75,7 @@
                         <div
                             [class]="'flex items-center col-item col-item-' + column.key + getColorClassName(column, rowData)"
                         >
-                            {{ rowData[column.key] }}
+                            {{ typeof column?.format === 'function' ? column?.format(rowData[column.key]) : rowData[column.key]  }}
                         </div>
                     </ng-container>
                     <ng-template #noData></ng-template>

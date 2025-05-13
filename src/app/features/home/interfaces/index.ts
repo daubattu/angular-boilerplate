@@ -6,4 +6,5 @@ export interface IColumn {
     onToogle?: Function;
     size?: ComlumnSize;
     compareKey?: string;
+    format?: Function;
 }
